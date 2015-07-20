@@ -1,35 +1,46 @@
 'use strict';
 
 var _ = require('underscore'),
-    moment = require('moment'),
-    people = require('../../models/people'),
+    ccb = require('../../lib/ccb'),
+    peopleModel = require('../../models/people'),
     Promise = require('bluebird');
 
 module.exports = function (router) {
     router.get('/', function (req, res) {
-        var obj = {};
-        if(req.query.first_name) {
-            obj.first_name = req.query.first_name;
+        if(process.env.NODE_ENV === 'production' && req.query.token !== process.env.slack_token) { //make this an express middleware
+            res.send('An Error Occurred: invalid token');
         }
-        if(req.query.last_name) {
-            obj.last_name = req.query.last_name;
+
+        if(!req.query.text) {
+            res.send('An Error Occurred: invalid input');
         }
-        if(req.query.name) {
-            obj.first_name = req.query.name.split(' ')[0];
-            obj.last_name = req.query.name.split(' ')[1];
-        }
-        people.search(obj).then(function(result) {
-            var names = [];
-            _.each(result.ccb_api.response[0].individuals[0].individual, function(individual){
-                names.push(individual.full_name[0] + " - " + (individual.phones[0].phone[0]._ || "No phone number") + " - " + individual.email[0]);
-            });
-            res.send({
-                "text": names.join(', ')
-            });
-        }).catch(function(err) {
-            res.send({
-                "text": 'An Error Occurred:' + err.message
-            });
-        });
+
+        var obj = {},
+            names = decodeURI(req.query.text).split(' '),
+            individuals = [];
+
+        obj.first_name = names[0];
+        obj.last_name = names[1];
+
+        peopleModel.search({
+            first_name: names[0],
+            last_name: names[1]
+        }).then(function(first) {
+            individuals = individuals.concat(ccb.parseIndividuals(first));
+            if (individuals.length === 0) {
+                return peopleModel.search({
+                    last_name: names[0] //if no first names found, search the name as a last name
+                });
+            } else {
+                return Promise.resolve(null);
+            }
+        }).then(function(last) {
+            individuals = individuals.concat(ccb.parseIndividuals(last));
+            console.log(ccb.parseIndividuals(last));
+            var output = _.map(individuals, function(individual) {
+                return ccb.individualToString(individual);
+            }).join(', ');
+            res.send(output);
+        })
     });
 };
