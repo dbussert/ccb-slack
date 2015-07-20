@@ -1,0 +1,13 @@
+{
+  "generator-kraken": {
+    "taskModule": "grunt",
+    "description": "Church Community Builder and Slack Integration",
+    "author": "Dillon Bussert",
+    "templateModule": "makara",
+    "i18n": false,
+    "componentPackager": "bower",
+    "cssModule": false,
+    "jsModule": "browserify",
+    "useJson": null
+  }
+}
