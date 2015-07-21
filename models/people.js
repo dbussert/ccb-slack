@@ -1,7 +1,6 @@
 'use strict';
 
-var _ = require('underscore'),
-    Promise = require('bluebird'),
+var Promise = require('bluebird'),
     request = require('request-promise'),
     xml2js = require('xml2js-promise');
 
