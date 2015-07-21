@@ -25,11 +25,11 @@ app = module.exports = express();
 app.use(kraken(options));
 
 app.use(function (req, res, next) { //check requests come from a valid Slack integration
-    if(process.env.NODE_ENV === 'production' && req.query.token !== process.env.slack_token) {
-		res.send('An Error Occurred: invalid token');
+	if(process.env.NODE_ENV === 'production' && req.query.token !== process.env.slack_token) {
+		res.send("It doesn't look like you're authorized");
 	} else {
-        next();
-    }
+		next();
+	}
 });
 
 app.use(function (req, res, next) { //check the parameters are valid
@@ -38,12 +38,10 @@ app.use(function (req, res, next) { //check the parameters are valid
 	res.locals.function = text[0];
 	res.locals.data = text[1];
 
-	if(!res.locals.command || res.locals.command !== '/ccb') {
-		res.send('An Error Occurred: invalid input, command not ccb');
-	} else if(!res.locals.function || ccb.function.indexOf(res.locals.function) === -1) {
-		res.send('An Error Occurred: invalid input, function is not valid');
+	if(!res.locals.function || ccb.function.indexOf(res.locals.function) === -1) {
+		res.send("Sorry I don't understand " + res.locals.function);
 	} else if(!res.locals.data) {
-		res.send('An Error Occurred: invalid input, no data');
+		res.send("Did you forget to type something?");
 	} else {
 		next();
 	}
