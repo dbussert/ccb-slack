@@ -1,6 +1,7 @@
 'use strict';
 
-var ccb = require('./lib/ccb'),
+var _ = require('underscore'),
+	ccb = require('./lib/ccb'),
 	express = require('express'),
 	kraken = require('kraken-js');
 
@@ -27,7 +28,7 @@ app.use(kraken(options));
 if(process.env.NODE_ENV === 'production') {
 	app.use(function (req, res, next) { //check requests come from a valid Slack integration
 		if (req.query.token !== process.env.slack_token) {
-			res.send("It doesn't look like you're authorized");
+			return res.send("It doesn't look like you're authorized");
 		} else {
 			next();
 		}
@@ -35,18 +36,39 @@ if(process.env.NODE_ENV === 'production') {
 }
 
 app.use(function (req, res, next) { //check the parameters are valid
-	res.locals.command = decodeURI(req.query.command);
-	var text = decodeURI(req.query.text).split(/ (.+)/); //split between the first space in the text
-	res.locals.function = text[0];
-	res.locals.data = text[1];
-
-	if(!res.locals.function || ccb.function.indexOf(res.locals.function) === -1) {
-		res.send("Sorry I don't understand " + res.locals.function);
-	} else if(!res.locals.data) {
-		res.send("Did you forget to type something?");
-	} else {
-		next();
+	if(!req.query.command || !req.query.text) { //we don't care what command slack integration, typicaly its /ccb
+		return res.send("Something is missing");
 	}
+
+	//ex: since last week {delimiter:',' , columns:['email']}
+	var text = decodeURI(req.query.text).split(/ (.+)/); //split between the first space in the text to get the function
+	res.locals.function = text[0];
+	if(!res.locals.function || ccb.function.indexOf(res.locals.function) === -1) {
+		return res.send("Sorry I don't understand " + res.locals.function);
+	}
+
+	//ex: last week {delimiter:',' , columns:['email']}
+	text = text[1].split(/({.*})/);
+	res.locals.options = {
+		break: '\n',
+		delimiter: ' - '
+	};
+	if(text.length > 1) { //if options were provided
+		try {
+			_.extend(res.locals.options, JSON.parse(text[1])); //attempt to parse the json
+		}
+		catch(e) {
+			return res.send("Your options aren't quite right"+e);
+		}
+	}
+
+	//ex: last week
+	res.locals.data = text[0].trim();
+	if(!res.locals.data) {
+		return res.send("Did you forget to type something?");
+	}
+
+	next();
 });
 
 app.on('start', function () {

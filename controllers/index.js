@@ -20,7 +20,9 @@ module.exports = function (router) {
 };
 
 function who(req, res) {
-	var names = res.locals.data.split(' '), //see if there is a first and last name
+	var columns = res.locals.options.columns || ["name", "phone", "email"],
+		delimiter = res.locals.options.delimiter,
+		names = res.locals.data.split(' '), //see if there is a first and last name
 		people = [];
 
 	peopleModel.who({
@@ -38,14 +40,16 @@ function who(req, res) {
 	}).then(function(result) {
 		people = people.concat(ccb.parseIndividuals(result));
 		var output = _.map(_.sortBy(people, 'name'), function(person) { //sort the list of people and turn the objects into an array of strings
-			return ccb.individualToString(person);
-		}).join('\n');
+			return ccb.individualToString(person, columns);
+		}).join(res.locals.options.break);
 		res.send(output || "Couldn't find anyone by that name");
 	});
 }
 
 function since(req, res) {
-	var date = null;
+	var columns = res.locals.options.columns || ["name", "phone", "email", "created"],
+		delimiter = res.locals.options.delimiter,
+		date = null;
 
 	if (res.locals.data === 'last week') {
 		date = moment().subtract(1, 'week').format('YYYY-MM-DD');
@@ -68,8 +72,8 @@ function since(req, res) {
 		   return moment(person.created) > moment(date);
 		});
 		var output = _.map(_.sortBy(people, 'name'), function(person) {
-			return ccb.individualToString(person, ["name", "phone", "email", "created"]);
-		}).join('\n');
+			return ccb.individualToString(person, columns, delimiter);
+		}).join(res.locals.options.break);
 		res.send(output || "Couldn't find anyone since then");
 	});
 }
