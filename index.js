@@ -24,13 +24,15 @@ options = {
 app = module.exports = express();
 app.use(kraken(options));
 
-app.use(function (req, res, next) { //check requests come from a valid Slack integration
-	if(process.env.NODE_ENV === 'production' && req.query.token !== process.env.slack_token) {
-		res.send("It doesn't look like you're authorized");
-	} else {
-		next();
-	}
-});
+if(process.env.NODE_ENV === 'production') {
+	app.use(function (req, res, next) { //check requests come from a valid Slack integration
+		if (req.query.token !== process.env.slack_token) {
+			res.send("It doesn't look like you're authorized");
+		} else {
+			next();
+		}
+	});
+}
 
 app.use(function (req, res, next) { //check the parameters are valid
 	res.locals.command = decodeURI(req.query.command);

@@ -68,7 +68,7 @@ function since(req, res) {
 		   return moment(person.created) > moment(date);
 		});
 		var output = _.map(_.sortBy(people, 'name'), function(person) {
-			return ccb.individualToString(person);
+			return ccb.individualToString(person, ["name", "phone", "email", "created"]);
 		}).join('\n');
 		res.send(output || "Couldn't find anyone since then");
 	});
