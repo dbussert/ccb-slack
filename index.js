@@ -37,7 +37,7 @@ if(process.env.NODE_ENV === 'production') {
 
 app.use(function (req, res, next) { //check the parameters are valid
 	if(!req.query.command || !req.query.text) { //we don't care what command slack integration, typicaly its /ccb
-		return res.send("Something is missing");
+		return res.send("Something is missing"); //should only happen if the server is hit by anyone but slack
 	}
 
 	//ex: since last week {delimiter:',' , columns:['email']}
@@ -48,22 +48,22 @@ app.use(function (req, res, next) { //check the parameters are valid
 	}
 
 	//ex: last week {delimiter:',' , columns:['email']}
-	text = text[1].split(/({.*})/);
+	text = text[1].split(/({.*})/); //split out any options that were passed in the message
 	res.locals.options = {
 		break: '\n',
 		delimiter: ' - '
 	};
 	if(text.length > 1) { //if options were provided
 		try {
-			_.extend(res.locals.options, JSON.parse(text[1])); //attempt to parse the json
+			_.extend(res.locals.options, JSON.parse(text[1])); //attempt to parse the json and override the default options
 		}
 		catch(e) {
-			return res.send("Your options aren't quite right"+e);
+			return res.send("Your options aren't quite right");
 		}
 	}
 
 	//ex: last week
-	res.locals.data = text[0].trim();
+	res.locals.data = text[0].trim(); //after everything else is parsed out, save the data
 	if(!res.locals.data) {
 		return res.send("Did you forget to type something?");
 	}

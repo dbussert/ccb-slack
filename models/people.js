@@ -4,7 +4,7 @@ var Promise = require('bluebird'),
 	request = require('request-promise'),
 	xml2js = require('xml2js-promise');
 
-module.exports.who = function(obj) {
+module.exports.whois = function(obj) {
 	var criteria = (obj.first_name ? "&first_name="+ obj.first_name: "") + (obj.last_name ? "&last_name="+ obj.last_name: "");
 
 	return request({
