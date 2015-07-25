@@ -50,8 +50,8 @@ app.use(function (req, res, next) { //check the parameters are valid
 	//ex: last week {delimiter:',' , columns:['email']}
 	text = text[1].split(/({.*})/); //split out any options that were passed in the message
 	res.locals.options = {
-		break: '\n',
-		delimiter: ' - '
+		break: '\n', //the character ending each person when turned to a string
+		delimiter: ' - ' //the character between each field in a person when turned to a string
 	};
 	if(text.length > 1) { //if options were provided
 		try {
