@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+    <Document>
+        <Folder>
+            <name>KML Info</name>
+            <Snippet maxLines='1'>Found <%= people.length %> people</Snippet>
+        </Folder>
+        <Style id='chatStyle'>
+            <LabelStyle>
+            <scale>0</scale>
+                      </LabelStyle>
+                        <BalloonStyle>
+                        <text>
+                        <![CDATA[<u><b>$[name]</b></u><br/>$[description]]]>
+            </text>
+              </BalloonStyle>
+        </Style>
+        <% people.forEach(function (person) { %>
+        <Placemark>
+            <name><%= person.name %></name>
+            <styleUrl>#chatStyle</styleUrl>
+            <snippet maxLines='0'/>
+            <description>
+                <![CDATA[
+                <p><strong>Address:</strong> <%= person.address %></p>
+                ]]>
+            </description>
+            <Point>
+                <coordinates><%= person.longitude %>, <%= person.latitude %></coordinates>
+            </Point>
+        </Placemark>
+        <% }); %>
+    </Document>
+</kml>

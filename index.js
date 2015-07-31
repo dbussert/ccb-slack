@@ -48,7 +48,7 @@ app.use(function (req, res, next) { //check the parameters are valid
 	}
 
 	//ex: last week {delimiter:',' , columns:['email']}
-	text = text[1].split(/({.*})/); //split out any options that were passed in the message
+	text = text[1] ? text[1].split(/({.*})/) : {}; //split out any options that were passed in the message
 	res.locals.options = {
 		break: '\n', //the character ending each person when turned to a string
 		delimiter: ' - ' //the character between each field in a person when turned to a string
@@ -63,12 +63,26 @@ app.use(function (req, res, next) { //check the parameters are valid
 	}
 
 	//ex: last week
-	res.locals.data = text[0].trim(); //after everything else is parsed out, save the data
+	res.locals.data = text[0] ? text[0].trim() : ""; //after everything else is parsed out, save the data
 	if(!res.locals.data) {
 		return res.send("Did you forget to type something?");
 	}
 
 	next();
+});
+
+app.use(function (req, res, next) { //for outputting kml as a file
+    res.kml = function (code, object, filename) {
+        this.header('Content-Type', 'application/vnd.google-earth.kml+xml');
+        this.header('Content-Disposition', 'attachment; filename="' + filename + '.kml"');
+
+        this.header('Content-Length', Buffer.byteLength(object));
+
+        // 200's must be returned for the data to be processed
+        return this.status(200).send(object);
+    };
+
+    return next();
 });
 
 app.on('start', function () {

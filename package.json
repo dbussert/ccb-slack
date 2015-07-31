@@ -5,32 +5,34 @@
   "author": "Dillon Bussert",
   "main": "index.js",
   "scripts": {
-    "test": "grunt test",
-    "build": "grunt build",
-    "all": "npm run build && npm run test"
+	"test": "grunt test",
+	"build": "grunt build",
+	"all": "npm run build && npm run test"
   },
   "dependencies": {
-    "bluebird": "^2.9.34",
-    "express": "^4.12.2",
-    "kraken-devtools": "^1.2.1",
-    "kraken-js": "^1.0.3",
-    "makara": "^2.0.1",
-    "moment": "^2.10.3",
-    "request-promise": "^0.4.2",
-    "underscore": "^1.8.3",
-    "xml2js-promise": "^0.0.2"
+	"bluebird": "^2.9.34",
+	"ejs": "^2.0.7",
+	"express": "^4.12.2",
+	"kraken-devtools": "^1.2.1",
+	"kraken-js": "^1.0.3",
+	"makara": "^2.0.1",
+	"moment": "^2.10.3",
+	"node-geocoder": "^2.22.0",
+	"request-promise": "^0.4.2",
+	"underscore": "^1.8.3",
+	"xml2js-promise": "^0.0.2"
   },
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-browserify": "^3.8.0",
-    "grunt-cli": "^0.1.13",
-    "grunt-config-dir": "^0.3.2",
-    "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-jshint": "^0.10.0",
-    "grunt-copy-to": "0.0.10",
-    "grunt-dustjs": "^1.2.1",
-    "grunt-mocha-cli": "^1.13.1",
-    "mocha": "^1.18.0",
-    "supertest": "^0.9.0"
+	"grunt": "^0.4.5",
+	"grunt-browserify": "^3.8.0",
+	"grunt-cli": "^0.1.13",
+	"grunt-config-dir": "^0.3.2",
+	"grunt-contrib-clean": "^0.6.0",
+	"grunt-contrib-jshint": "^0.10.0",
+	"grunt-copy-to": "0.0.10",
+	"grunt-dustjs": "^1.2.1",
+	"grunt-mocha-cli": "^1.13.1",
+	"mocha": "^1.18.0",
+	"supertest": "^0.9.0"
   }
 }
