@@ -1,7 +1,8 @@
 'use strict';
 
 var _ = require('underscore'),
-	moment = require('moment'),
+    eventModel = require('../models/events'),
+    moment = require('moment'),
 	peopleModel = require('../models/people'),
 	Promise = require('bluebird');
 
@@ -14,6 +15,9 @@ module.exports = function (router) {
 			case 'since':
 				since(req,res);
 				break;
+            case 'attendance':
+                attendance(req,res);
+                break;
 		}
 	});
 };
@@ -75,4 +79,40 @@ function since(req, res) {
 		}).join(res.locals.options.break); //convert the array of strings into a string
 		res.send(output || "Couldn't find anyone since then");
 	});
+}
+
+// attedence since 2015-07-30
+// attedence last 5 weeks
+// attedence 2015-07-30
+function attendance(req, res) {
+    var columns = res.locals.options.columns || ["name", "date", "attendance"],
+        delimiter = res.locals.options.delimiter,
+        dates = [],
+        parts = res.locals.data.split(' ');
+
+    //parse well known time frames or default to a
+    if (parts[0] === 'last') {
+        var weeks = parts[1] === 'week' ? 1 : parts[1]; //last week is equal to 1 week ago, or take the number provided
+        for(var i = 0; i < weeks; i++) {
+            dates.push(moment().day(-7 * i).format('YYYY-MM-DD')); //add every date going backwards the number of weeks provided
+        }
+    } else if (parts[0] === 'since') {
+        var weeks = moment().day(7).diff(moment(parts[1]), 'weeks'); //number of weeks since the provided date, rounded up
+        for(var i = 0; i < weeks; i++) {
+            dates.push(moment().day(-7 * i).format('YYYY-MM-DD')); //add every date going backwards the number of weeks provided
+        }
+    } else if (res.locals.data) { //assume its a date
+        dates.push(res.locals.data);
+    }  else {
+        //this should not happen
+    }
+
+    eventModel.attendance({
+        dates: dates
+    }).then(function(events) {
+        var output = _.map(events, function(event) { //sort by name and then convert objects into an array of strings
+            return event.toString(columns, delimiter);
+        }).join(res.locals.options.break); //convert the array of strings into a string
+        res.send(output || "No events found");
+    });
 }
