@@ -12,8 +12,8 @@ module.exports = function (router) {
 			case 'whois':
 				whois(req, res);
 				break;
-			case 'since':
-				since(req,res);
+			case 'people':
+				people(req,res);
 				break;
             case 'attendance':
                 attendance(req,res);
@@ -22,6 +22,10 @@ module.exports = function (router) {
 	});
 };
 
+//whois Dillon
+//whois Dillon Bussert
+//whois D B
+//whois Bussert
 function whois(req, res) {
 	var columns = res.locals.options.columns || ["name", "phone", "email", "address"],
 		delimiter = res.locals.options.delimiter,
@@ -49,21 +53,25 @@ function whois(req, res) {
 	});
 }
 
-function since(req, res) {
+// people since last week
+// people since yesterday
+// people since two two weeks ago
+// people since 5 two weeks ago
+function people(req, res) {
 	var columns = res.locals.options.columns || ["name", "phone", "email", "created"],
 		delimiter = res.locals.options.delimiter,
-		date = null;
+		date = null,
+        parts = res.locals.data.split(' ');
 
 	//parse well known time frames or default to a
-	if (res.locals.data === 'last week') {
+	if (parts[1] === 'last') { //last week
 		date = moment().subtract(1, 'week').format('YYYY-MM-DD');
-	} else if (res.locals.data === 'yesterday') {
+	} else if (parts[1] === 'yesterday') {
 		date = moment().subtract(1, 'day').format('YYYY-MM-DD');
-	} else if (res.locals.data === 'two weeks ago') {
+	} else if (parts[1] === 'two') { //two weeks ago
 		date = moment().subtract(2, 'week').format('YYYY-MM-DD');
 	} else if (res.locals.data) {
-		var parts = res.locals.data.split(' ');
-		date = moment().subtract(parts[0], parts[1]).format('YYYY-MM-DD');
+		date = moment().subtract(parts[1], parts[2]).format('YYYY-MM-DD');
 	} else {
 		//this should not happen
 	}
