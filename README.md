@@ -54,7 +54,7 @@ Get all people added to CCB since `Date`
 - `last week`
 - `yesterday`
 - `two weeks ago`
-- `5 weeks ago`
+- `X weeks ago`
 
 #### /ccb attendance `Date`
 
@@ -64,7 +64,7 @@ Get attendance for an event since `Date`.  Currently only a single event `ccb_ev
 
 - `2015-08-28`
 - `since 2015-02-08`
-- `last 3 weeks`
+- `last X weeks`
 
 #### /ccb map everyone
 
@@ -88,7 +88,16 @@ Responses from **ccb-slack** can be specially formatted if the defaults do not s
 
 #### Available columns
 
-TBD
+- name
+- first_name
+- last_name
+- phone
+- email
+- created
+- creator
+- modified
+- modifier
+- address
 
 ### License
 
