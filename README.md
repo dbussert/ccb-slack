@@ -89,3 +89,7 @@ Responses from **ccb-slack** can be specially formatted if the defaults do not s
 #### Available columns
 
 TBD
+
+### License
+
+MIT. Copyright (c) Dillon Bussert.
