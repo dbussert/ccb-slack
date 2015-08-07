@@ -1,7 +1,15 @@
 # ccb-slack
-Slack integration for Church Community Builder.  
+
+## Slack integration for Church Community Builder
+
+**ccb-slack** makes it easy to access information from CCB directly from your Slack channels.
 
 ### Features
+
+- Look up people's contact information
+- Find recently added people
+- Check attendance for an event
+- Locate people on a map
 
 ### Install
 
@@ -12,10 +20,12 @@ npm install
 
 Set environment variables
 
+- `PORT` the web server port, defaults to 8000
 - `ccb_username` the API user
 - `ccb_password` the API password
 - `ccb_url` your CCB site
-- `slack_token` your Slack token to ensure only your Slack can make requests
+- `slack_token` your Slack integration token to ensure only your channels are making requests (only used in production)
+- `NODE_ENV` the node environment, set to production to enforce `slack_token` verification
 
 Create a `slash command` integration in Slack
 
@@ -23,9 +33,11 @@ Create a `slash command` integration in Slack
 - url `public url of your ccb-slack server`
 - method `GET` 
 
+### Usage
+
 #### /ccb whois `Name`
 
-Get all matching individuals from CCB
+Get all matching people from CCB
 
 'Name' can be any partial part of:
 
@@ -35,7 +47,7 @@ Get all matching individuals from CCB
 
 #### /ccb people since `Date`
 
-Get all individuals added to CCB since `Date`
+Get all people added to CCB since `Date`
 
 `Date` can be the following:
 
@@ -60,4 +72,20 @@ Geolocate all individuals in CCB and return a KML of locations.  Note: this call
 
 `http://localhost:8000/?command=ccb&text=map%20everyone`
 
-Note: geolocating is purposely slowed to not exceed Google's geocoding API limit (5 calls/sec).
+Note: geolocating is purposely slow to not exceed Google's geocoding API limit (5 calls/sec).  Expect this call to take a long time even for a few hundred users.
+
+### Formatting
+
+#### Options
+
+Responses from **ccb-slack** can be specially formatted if the defaults do not suffice, e.g. get people since last week as a CSV to paste into an email.  To format, append a JSON block to the end of the command:
+
+`/ccb whois Smith {"delimiter":",", "break":",", "columns":["email"]}`
+
+- `delimiter` the separator between each column of information for a person (default: ` - `
+- `break` the separator between each person (default: `\n`)
+- `columns` an array of columns of information for a person (default: varies per call)
+
+#### Available columns
+
+TBD
