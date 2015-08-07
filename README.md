@@ -20,12 +20,12 @@ npm install
 
 Set environment variables
 
-- `PORT` the web server port, defaults to 8000
+- `PORT` the web server port (default 8000)
 - `ccb_username` the API user
 - `ccb_password` the API password
 - `ccb_url` your CCB site
-- `slack_token` your Slack integration token to ensure only your channels are making requests (only used in production)
-- `NODE_ENV` the node environment, set to production to enforce `slack_token` verification
+- `slack_token` your Slack integration token to ensure only your channels are making requests (only when NODE_ENV=production)
+- `NODE_ENV` the node environment to enforce `slack_token` verification (default NOT production)
 
 Create a `slash command` integration in Slack
 
