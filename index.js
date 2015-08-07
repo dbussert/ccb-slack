@@ -40,14 +40,14 @@ app.use(function (req, res, next) { //check the parameters are valid
 		return res.send("Something is missing"); //should only happen if the server is hit by anyone but slack
 	}
 
-	//ex: since last week {delimiter:',' , columns:['email']}
+	//ex: people since last week {"delimiter":"," , "columns":["email"]}
 	var text = decodeURI(req.query.text).split(/ (.+)/); //split between the first space in the text to get the function
 	res.locals.function = text[0];
 	if(!res.locals.function || ccb.function.indexOf(res.locals.function) === -1) {
 		return res.send("Sorry I don't understand " + res.locals.function);
 	}
 
-	//ex: last week {delimiter:',' , columns:['email']}
+	//ex: since last week {"delimiter":"," , "columns":["email"]}
 	text = text[1] ? text[1].split(/({.*})/) : {}; //split out any options that were passed in the message
 	res.locals.options = {
 		break: '\n', //the character ending each person when turned to a string
@@ -62,7 +62,7 @@ app.use(function (req, res, next) { //check the parameters are valid
 		}
 	}
 
-	//ex: last week
+	//ex: since last week
 	res.locals.data = text[0] ? text[0].trim() : ""; //after everything else is parsed out, save the data
 	if(!res.locals.data) {
 		return res.send("Did you forget to type something?");
