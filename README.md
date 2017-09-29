@@ -33,6 +33,21 @@ Create a `slash command` integration in Slack
 - url `public url of your ccb-slack server`
 - method `GET` 
 
+#### Using Docker
+
+Export your environment variables, then build the docker image and run it:
+
+```bash
+docker build -t ccb-slack:0.1.0 .
+docker run -d -p 8000:8000 \
+  --env ccb_username \
+  --env ccb_password \
+  --env ccb_url \
+  --env slack_token \
+  --env NODE_ENV \
+  ccb-slack:0.1.0
+```
+
 ### Usage
 
 #### /ccb whois `Name`
